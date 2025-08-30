@@ -1,0 +1,12 @@
+# temporary directories
+.vs
+x64
+x86
+*.user
+GuessingGame
+HelloWorld
+PolishCalc
+BallsManager
+TemperatureConversioin
+ApplesGameReference
+FlowChart
