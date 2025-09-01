@@ -27,7 +27,12 @@ namespace ApplesGame
 	void UpdateUI(UI& ui, Game& game) {
 		ui.isGameOver = game.isGameFinished;
 
-		ui.score.setString("Score: " + std::to_string(game.numEatenApples) + " " + "Extra points: " + std::to_string(game.numEatenApples));
+		if (!(game.mode & static_cast<uint32_t>(GameSettingBits::IsGameInfinite))) {
+			ui.score.setString("Score: " + std::to_string(game.numEatenApples) + " " + "Deaths: " + std::to_string(game.deathCount) + " / 3");
+		}
+		else {
+			ui.score.setString("Score: " + std::to_string(game.numEatenApples));
+		}
 
 	}
 

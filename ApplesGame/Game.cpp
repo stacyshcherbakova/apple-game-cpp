@@ -139,6 +139,7 @@ namespace ApplesGame {
 					game.deathSound.play();
 					game.isGameFinished = true;
 					game.timeSinceGameFinish = 0.f;
+					game.deathCount += 1;
 				}
 			}
 
@@ -149,8 +150,10 @@ namespace ApplesGame {
 				game.deathSound.play();
 				game.isGameFinished = true;
 				game.timeSinceGameFinish = 0.f;
+				game.deathCount += 1;
 			}
 		}
+
 		else
 		{
 			if (game.timeSinceGameFinish <= PAUSE_LENGTH)
@@ -158,6 +161,7 @@ namespace ApplesGame {
 				game.timeSinceGameFinish += deltaTime;
 				game.background.setFillColor(sf::Color::Red);
 			}
+
 			else
 			{
 				// Reset backgound

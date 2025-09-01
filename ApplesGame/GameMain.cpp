@@ -26,24 +26,33 @@ int main()
         "C:/Windows/Fonts/arial.ttf"
     );
 
-    sf::Text prompt1("How many apples? (Enter to confirm)", font, 24);
-    prompt1.setPosition(40.f, 180.f);
+    sf::Text promptApples("How many apples? (Enter to confirm)", font, 24);
+    promptApples.setPosition(40.f, 40.f);
 
-    sf::Text prompt2("Which game mode? (Enter numbre to confirm)", font, 24);
-    prompt2.setPosition(40.f, 40.f);
+    sf::Text promptAcceleration("Choose acceleration mode (enter number):", font, 24);
+    promptAcceleration.setPosition(40.f, 40.f);
 
-    sf::Text option1("1 = With Acceleration", font, 20);
-    option1.setPosition(60.f, 90.f);
+    sf::Text promptInfinite("Infinite game? (enter number):", font, 24);
+    promptInfinite.setPosition(40.f, 40.f);
 
-    sf::Text option2("2 = No Acceleration", font, 20);
-    option2.setPosition(60.f, 120.f);
+    sf::Text accelOption1("1 = With Acceleration", font, 20);
+    accelOption1.setPosition(60.f, 90.f);
+
+    sf::Text accelOption2("2 = No Acceleration", font, 20);
+    accelOption2.setPosition(60.f, 120.f);
+
+    sf::Text infiniteOption1("1 = Yes", font, 20);
+    infiniteOption1.setPosition(60.f, 90.f);
+
+    sf::Text infiniteOption2("2 = No", font, 20);
+    infiniteOption2.setPosition(60.f, 120.f);
 
     std::string inputStr;
     sf::Text inputText("", font, 32);
-    inputText.setPosition(40.f, 150.f);
+    inputText.setPosition(40.f, 210.f);
 
-    enum class InputState { Mode, Apples, Playing };
-    InputState state = InputState::Mode;
+    enum class InputState { Acceleration, Infinite, Apples, Playing };
+    InputState state = InputState::Acceleration;
 
     Game game;
 
@@ -55,7 +64,7 @@ int main()
                 window.close();
             }
 
-            if ((state == InputState::Mode || state == InputState::Apples) &&
+            if ((state == InputState::Acceleration || state == InputState::Infinite || state == InputState::Apples) &&
                 event.type == sf::Event::TextEntered) {
                 const uint32_t u = event.text.unicode;
 
@@ -68,24 +77,47 @@ int main()
             }
 
             // Commit on Enter
-            if ((state == InputState::Mode || state == InputState::Apples) &&
+            if ((state == InputState::Acceleration || state == InputState::Infinite || state == InputState::Apples) &&
                 event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
 
-                if (state == InputState::Mode) {
+                if (state == InputState::Acceleration) {
                     if (inputStr == "1") {
-                        game.mode = static_cast<uint32_t>(GameSettingBits::IsGameWithAcceleration);
+                        game.mode |= static_cast<uint32_t>(GameSettingBits::IsGameWithAcceleration);
+                        state = InputState::Infinite;
+                        inputStr.clear();
+                        inputText.setPosition(40.f, 210.f);
+                    }
+                    else if (inputStr == "2") {
+                        state = InputState::Infinite;
+                        inputStr.clear();
+                        inputText.setPosition(40.f, 210.f);
+                        continue;
+                    }
+                    else {
+                        if (inputStr != "1" && inputStr != "2") {
+                            inputStr.clear();
+                            continue;
+                        }
+                    }
+                }
+                else if (state == InputState::Infinite) {
+                    if (inputStr == "1") {
+                        game.mode |= static_cast<uint32_t>(GameSettingBits::IsGameInfinite);
                         state = InputState::Apples;
                         inputStr.clear();
                         inputText.setPosition(40.f, 210.f);
                     }
                     else if (inputStr == "2") {
-                        game.mode = static_cast<uint32_t>(GameSettingBits::IsGameNoAcceleration);
                         state = InputState::Apples;
                         inputStr.clear();
                         inputText.setPosition(40.f, 210.f);
+                        continue;
                     }
                     else {
-                        // invalid mode: ignore or flash a message
+                        if (inputStr != "1" && inputStr != "2") {
+                            inputStr.clear();
+                            continue;
+                        }
                     }
                 }
                 else if (state == InputState::Apples) {
@@ -102,9 +134,6 @@ int main()
                             state = InputState::Playing;
                             inputStr.clear();
                         }
-                        else {
-                            // invalid n: ignore or show warning
-                        }
                     }
                 }
             }
@@ -113,26 +142,38 @@ int main()
         window.clear();
 
 
-        if (state == InputState::Mode) {
+        if (state == InputState::Acceleration) {
             inputText.setString(inputStr);
 
-            window.draw(prompt2); // what mode?
-            window.draw(option1);
-            window.draw(option2);
+            window.draw(promptAcceleration);
+            window.draw(accelOption1);
+            window.draw(accelOption2);
             window.draw(inputText);
 
             window.display();
             continue;
         }
+        else if (state == InputState::Infinite) {
+            inputText.setString(inputStr);
 
+            window.draw(promptInfinite);
+            window.draw(infiniteOption1);
+            window.draw(infiniteOption2);
+            window.draw(inputText);
 
+            window.display();
+            continue;
+        }
         else if (state == InputState::Apples) {
             inputText.setString(inputStr);
-            window.draw(prompt1);  // "How many apples?"
+
+            window.draw(promptApples);
             window.draw(inputText);
+
             window.display();
             continue;
         }
+
 
         else if (state == InputState::Playing) {
             float currentTime = gameClock.getElapsedTime().asSeconds();
@@ -140,6 +181,18 @@ int main()
             lastTime = currentTime;
 
             // Normal game update/draw
+            if (!(game.mode & static_cast<uint32_t>(GameSettingBits::IsGameInfinite))) {
+                if (game.deathCount == 3) {
+                    game.isGameFinished = true;
+                    game.background.setFillColor(sf::Color::Red);
+                    gameClock.restart();
+                    if (gameClock.getElapsedTime().asSeconds() >= 3.f) {
+                        window.close();
+                        return 0;
+                    }
+                }
+            }
+           
             UpdateGame(game, deltaTime);
             DrawGame(game, window);
         }

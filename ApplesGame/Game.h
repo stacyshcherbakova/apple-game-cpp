@@ -18,6 +18,8 @@ namespace ApplesGame
 		int numApples;
 		Rock rocks[NUM_ROCKS];
 
+		int deathCount = 0;
+
 		// Global game data
 		int numEatenApples = 0;
 		bool isGameFinished = false;
@@ -40,7 +42,7 @@ namespace ApplesGame
 
 	enum class GameSettingBits : uint32_t {
 		IsGameWithAcceleration = 1 << 0,
-		IsGameNoAcceleration = 1 << 1,
+		IsGameInfinite = 1 << 1,
 
 	};
 
