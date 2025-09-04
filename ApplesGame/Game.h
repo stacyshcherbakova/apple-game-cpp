@@ -23,6 +23,7 @@ namespace ApplesGame
 		// Global game data
 		int numEatenApples = 0;
 		bool isGameFinished = false;
+		bool isGameBeaten = false;
 		float timeSinceGameFinish = 0.f;
 		sf::RectangleShape background;
 

@@ -32,7 +32,7 @@ int main()
     sf::Text promptAcceleration("Choose acceleration mode (enter number):", font, 24);
     promptAcceleration.setPosition(40.f, 40.f);
 
-    sf::Text promptInfinite("Infinite game? (enter number):", font, 24);
+    sf::Text promptInfinite("Infinite apples re-spawn? (enter number):", font, 24);
     promptInfinite.setPosition(40.f, 40.f);
 
     sf::Text accelOption1("1 = With Acceleration", font, 20);
@@ -180,16 +180,32 @@ int main()
             float deltaTime = currentTime - lastTime;
             lastTime = currentTime;
 
-            // Normal game update/draw
-            if (!(game.mode & static_cast<uint32_t>(GameSettingBits::IsGameInfinite))) {
-                if (game.deathCount == 3) {
+            if (game.deathCount == 3) {
+
+                static sf::Clock gameOverClock;
+
+                if (!game.isGameFinished) {
+                    sf::Clock gameOverClock;
                     game.isGameFinished = true;
-                    game.background.setFillColor(sf::Color::Red);
-                    gameClock.restart();
-                    if (gameClock.getElapsedTime().asSeconds() >= 3.f) {
-                        window.close();
-                        return 0;
-                    }
+                }
+
+                if (gameOverClock.getElapsedTime().asSeconds() >= 3.f) {
+                    window.close();
+                    return 0;
+                }
+            }
+
+            else if (game.numApples == 0) {
+                static sf::Clock gameOverClock;
+
+                if (!game.isGameBeaten) {
+                    sf::Clock gameOverClock;
+                    game.isGameBeaten = true;
+                }
+
+                if (gameOverClock.getElapsedTime().asSeconds() >= 3.f) {
+                    window.close();
+                    return 0;
                 }
             }
            

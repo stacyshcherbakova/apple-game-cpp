@@ -7,7 +7,9 @@ namespace ApplesGame
 		sf::Text score;
 		sf::Text gameOver;
 		sf::Text inputHint;
+		sf::Text youWon;
 		bool isGameOver;
+		bool isGameBeaten;
 
 	};
 

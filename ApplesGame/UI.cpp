@@ -22,18 +22,19 @@ namespace ApplesGame
 		ui.gameOver.setFillColor(sf::Color::Yellow);
 		ui.gameOver.setString("GAME OVER");
 		ui.gameOver.setOrigin(GetTextOrigin(ui.gameOver, { 0.5f, 0.5f }));
+
+		ui.isGameBeaten = false;
+		ui.youWon.setFont(font);
+		ui.youWon.setCharacterSize(48);
+		ui.youWon.setFillColor(sf::Color::Yellow);
+		ui.youWon.setString("YOU WON!");
+		ui.youWon.setOrigin(GetTextOrigin(ui.youWon, { 0.5f, 0.5f }));
 	}
 
 	void UpdateUI(UI& ui, Game& game) {
 		ui.isGameOver = game.isGameFinished;
-
-		if (!(game.mode & static_cast<uint32_t>(GameSettingBits::IsGameInfinite))) {
-			ui.score.setString("Score: " + std::to_string(game.numEatenApples) + " " + "Deaths: " + std::to_string(game.deathCount) + " / 3");
-		}
-		else {
-			ui.score.setString("Score: " + std::to_string(game.numEatenApples));
-		}
-
+		ui.isGameBeaten = game.isGameBeaten;
+		ui.score.setString("Score: " + std::to_string(game.numEatenApples) + " " + "Deaths: " + std::to_string(game.deathCount) + " / 3");
 	}
 
 	void DrawUI(UI& ui, sf::RenderWindow& window) {
@@ -47,6 +48,11 @@ namespace ApplesGame
 		{
 			ui.gameOver.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
 			window.draw(ui.gameOver);
+		}
+		if (ui.isGameBeaten)
+		{
+			ui.youWon.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+			window.draw(ui.youWon);
 		}
 	}
 }

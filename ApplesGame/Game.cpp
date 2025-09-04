@@ -120,15 +120,32 @@ namespace ApplesGame {
 					game.apples[i].position, APPLE_SIZE / 2.f))
 				{
 					game.eatSound.play();
-					game.apples[i].position = GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
-					++game.numEatenApples;
+					
+					if (game.mode & static_cast<uint32_t>(GameSettingBits::IsGameInfinite)) {
+						game.apples[i].position = GetRandomPositionInScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
+					}
+					else {
+							const int last = game.numApples - 1;
+							game.apples[i] = game.apples[last];
+							--game.numApples;
+						if (game.numApples == 0) {
+							game.isGameBeaten = true;
+							game.player.speed = 0.f;
+							game.timeSinceGameFinish = 0.f;
+							game.background.setFillColor(sf::Color::Green);
+							break;
+							
+						}
+					}
+
+						++game.numEatenApples;
 
 					if (game.mode & static_cast<uint32_t>(GameSettingBits::IsGameWithAcceleration)) {
 						game.player.speed += ACCELERATION;
 					}
-						
 				}
 			}
+
 
 			// Find player collisions with rocks
 			for (int i = 0; i < NUM_ROCKS; ++i)
@@ -159,7 +176,7 @@ namespace ApplesGame {
 			if (game.timeSinceGameFinish <= PAUSE_LENGTH)
 			{
 				game.timeSinceGameFinish += deltaTime;
-				game.background.setFillColor(sf::Color::Red);
+				game.background.setFillColor(game.isGameBeaten ? sf::Color::Green : sf::Color::Red);
 			}
 
 			else
@@ -183,7 +200,7 @@ namespace ApplesGame {
 		{
 			/*game.apples[i].shape.setPosition(game.apples[i].position.x, game.apples[i].position.y);
 			window.draw(game.apples[i].shape);*/
-			DrawApple(game.apples[i], window);
+				DrawApple(game.apples[i], window);
 		}
 
 		for (int i = 0; i < NUM_ROCKS; ++i)
