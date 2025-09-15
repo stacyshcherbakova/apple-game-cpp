@@ -124,8 +124,9 @@ int main()
                     if (!inputStr.empty()) {
                         int n = std::stoi(inputStr);
                         if (n > 0) {
+                            game.initialNumApples = n;
                             game.numApples = n;
-                            game.apples = new Apple[game.numApples];
+                            game.apples = new Apple[game.initialNumApples];
                             InitGame(game);
 
                             gameClock.restart();
@@ -201,6 +202,7 @@ int main()
                 if (!game.isGameBeaten) {
                     sf::Clock gameOverClock;
                     game.isGameBeaten = true;
+                    game.isGameFinished = true;
                 }
 
                 if (gameOverClock.getElapsedTime().asSeconds() >= 3.f) {

@@ -16,6 +16,7 @@ namespace ApplesGame
 		Player player;
 		Apple* apples;
 		int numApples;
+		int initialNumApples;
 		Rock rocks[NUM_ROCKS];
 
 		int deathCount = 0;

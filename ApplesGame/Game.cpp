@@ -7,6 +7,7 @@ namespace ApplesGame {
 	{
 		InitPlayer(game.player, game);
 		game.player.sprite.setRotation(0);
+		game.numApples = game.initialNumApples;
 
 		// Init apples
 		for (int i = 0; i < game.numApples; ++i)
@@ -21,6 +22,7 @@ namespace ApplesGame {
 		}
 
 		game.numEatenApples = 0;
+		game.isGameBeaten = false;
 		game.isGameFinished = false;
 		game.timeSinceGameFinish = 0;
 	}
@@ -130,6 +132,7 @@ namespace ApplesGame {
 							--game.numApples;
 						if (game.numApples == 0) {
 							game.isGameBeaten = true;
+							game.isGameFinished = true;
 							game.player.speed = 0.f;
 							game.timeSinceGameFinish = 0.f;
 							game.background.setFillColor(sf::Color::Green);
