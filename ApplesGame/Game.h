@@ -7,9 +7,16 @@
 #include "Apple.h"
 #include "Rock.h"
 #include "UI.h"
+#include <unordered_map>
 
 namespace ApplesGame 
 {
+	// Table of records
+	struct Record {
+		std::string name;
+		int score;
+	};
+
 	struct Game
 	{
 		uint32_t mode;
@@ -40,6 +47,13 @@ namespace ApplesGame
 		// UI
 		sf::Font font;
 		UI uiState;
+
+		std::unordered_map<std::string, int> leaderboard{
+			{"Alice", 60},
+			{"Bob",   85},
+			{"Carol", 100},
+			{"Dave",  40}
+		};
 	};
 
 	enum class GameSettingBits : uint32_t {
@@ -53,5 +67,5 @@ namespace ApplesGame
 	void UpdateGame(Game& game, float deltaTime);
 	void DrawGame(Game& game, sf::RenderWindow& window);
 	void DeinializeGame(Game& game);
-
+	bool compareRecords(const Record& a, const Record& b);
 }

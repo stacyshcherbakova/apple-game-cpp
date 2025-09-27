@@ -31,7 +31,7 @@ namespace ApplesGame {
 	{
 		game.font.loadFromFile(
 			"C:/Windows/Fonts/arial.ttf"
-		);
+		);  
 		assert(game.playerTexture.loadFromFile(RESOURCES_PATH + "\\Player.png"));
 		assert(game.appleTexture.loadFromFile(RESOURCES_PATH + "\\Apple.png"));
 		assert(game.rockTexture.loadFromFile(RESOURCES_PATH + "\\Rock.png"));
@@ -130,6 +130,7 @@ namespace ApplesGame {
 							const int last = game.numApples - 1;
 							game.apples[i] = game.apples[last];
 							--game.numApples;
+							++game.numEatenApples;
 						if (game.numApples == 0) {
 							game.isGameBeaten = true;
 							game.isGameFinished = true;
@@ -140,8 +141,6 @@ namespace ApplesGame {
 							
 						}
 					}
-
-						++game.numEatenApples;
 
 					if (game.mode & static_cast<uint32_t>(GameSettingBits::IsGameWithAcceleration)) {
 						game.player.speed += ACCELERATION;
@@ -166,7 +165,7 @@ namespace ApplesGame {
 			// Check screen borders collision
 			if (game.player.position.x - PLAYER_SIZE / 2.f < 0.f || game.player.position.x + PLAYER_SIZE / 2.f > SCREEN_WIDTH ||
 				game.player.position.y - PLAYER_SIZE / 2.f < 0.f || game.player.position.y + PLAYER_SIZE / 2.f > SCREEN_HEIGHT)
-			{
+			{ 
 				game.deathSound.play();
 				game.isGameFinished = true;
 				game.timeSinceGameFinish = 0.f;
@@ -219,5 +218,10 @@ namespace ApplesGame {
 	void DeinializeGame(Game& game)
 	{
 		delete [] game.apples;
+	}
+
+	bool compareRecords(const Record& a, const Record& b) {
+		if (a.score != b.score) return a.score > b.score;
+		return a.name < b.name;
 	}
 }

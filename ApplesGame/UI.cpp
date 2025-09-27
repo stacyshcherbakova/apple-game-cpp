@@ -44,15 +44,16 @@ namespace ApplesGame
 		ui.inputHint.setPosition(window.getSize().x - 10.f, 10.f);
 		window.draw(ui.inputHint);
 
-		if (ui.isGameOver)
-		{
-			ui.gameOver.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
-			window.draw(ui.gameOver);
-		}
 		if (ui.isGameBeaten)
 		{
 			ui.youWon.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
 			window.draw(ui.youWon);
+		}
+
+		else if (ui.isGameOver)
+		{
+			ui.gameOver.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+			window.draw(ui.gameOver);
 		}
 	}
 }
